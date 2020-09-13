@@ -13,11 +13,16 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('easy-deployment.helloWorld', () => {
+	let disposable = vscode.commands.registerCommand('easy-deployment.deploy', (path) => {
 		// The code you place here will be executed every time your command is executed
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Easy Deployment!');
+		console.log('path', path);
+		// 如果从命令进入，则path为空，从explorer右键菜单进入，则 path.fsPath 为所选绝对路径
+		if (path && path.fsPath) {
+			// 使用选择的路径
+		} else {
+			// 使用配置路径
+		}
 	});
 
 	context.subscriptions.push(disposable);

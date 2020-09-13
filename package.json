@@ -1,8 +1,10 @@
 {
-  "name": "easy-deployment",
+	"name": "easy-deployment",
 	"displayName": "Easy Deployment",
 	"description": "Easy compilation, packaging and deployment",
 	"version": "0.0.1",
+	"publisher": "LiYing",
+	"repository": "https://github.com/liying2008/easy-deployment",
 	"engines": {
 		"vscode": "^1.49.0"
 	},
@@ -10,16 +12,96 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:easy-deployment.helloWorld"
+		"onCommand:easy-deployment.deploy"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "easy-deployment.helloWorld",
-				"title": "Hello World"
+				"command": "easy-deployment.deploy",
+				"title": "Easy Deployment: Build & deploy"
 			}
-		]
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "easy-deployment.deploy",
+					"group": "navigation"
+				}
+			]
+		},
+		"configuration": {
+			"title": "Easy Deployment",
+			"properties": {
+				"easyDeployment.config": {
+					"type": "object",
+
+					"properties": {
+						"configurations": {
+							"type": "array",
+							"default": [],
+							"description": "Configurations for build and deployment.",
+							"items": {
+								"type": "object",
+
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Profile name."
+									},
+									"local": {
+										"type": "object",
+										"description": "Configuration of local project",
+
+										"properties": {
+											"projectPath": {
+												"type": "string",
+												"default": "."
+											},
+											"outputDir": {
+												"type": "string",
+												"default": "dist"
+											},
+											"buildCmd": {
+												"type": "string",
+												"description": "Build command for local project."
+											}
+										}
+									},
+									"remote": {
+										"type": "object",
+										"properties": {
+											"deploymentPath": {
+												"type": "string",
+												"description": "Remote deployment path."
+											}
+										}
+									},
+									"ssh": {
+										"type": "object",
+										"properties": {
+											"host": {
+												"type": "string"
+											},
+											"port": {
+												"type": "number",
+												"default": 22
+											},
+											"username": {
+												"type": "string"
+											},
+											"password": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
@@ -30,16 +112,20 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.49.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "^14.0.27",
-		"eslint": "^7.6.0",
+		"@types/vscode": "^1.49.0",
 		"@typescript-eslint/eslint-plugin": "^3.8.0",
 		"@typescript-eslint/parser": "^3.8.0",
+		"eslint": "^7.6.0",
 		"glob": "^7.1.6",
 		"mocha": "^8.1.3",
 		"typescript": "^4.0.2",
 		"vscode-test": "^1.4.0"
+	},
+	"dependencies": {
+		"archiver": "^5.0.2",
+		"node-ssh": "^11.0.0"
 	}
 }
