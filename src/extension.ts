@@ -14,21 +14,24 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('easy-deployment.deploy', (path) => {
-		// The code you place here will be executed every time your command is executed
+	let buildAndDeployDisposable = vscode.commands.registerCommand('easy-deployment.buildAndDeploy', (path) => execute(path, false));
 
-		console.log('path', path);
-		// 如果从命令进入，则path为空，从explorer右键菜单进入，则 path.fsPath 为所选绝对路径
-		if (path && path.fsPath) {
-			// 使用选择的路径
-			start(path.fsPath);
-		} else {
-			// 使用配置路径
-			start(undefined);
-		}
-	});
+	let deployOnlyDisposable = vscode.commands.registerCommand('easy-deployment.deployOnly', (path) => execute(path, true));
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(buildAndDeployDisposable, deployOnlyDisposable);
+}
+
+// The code you place here will be executed every time your command is executed
+function execute(path: any, deployOnly: boolean) {
+	console.log('path', path);
+	// 如果从命令进入，则path为空，从explorer右键菜单进入，则 path.fsPath 为所选绝对路径
+	if (path && path.fsPath) {
+		// 使用选择的路径
+		start(path.fsPath, deployOnly);
+	} else {
+		// 使用配置路径
+		start(undefined, deployOnly);
+	}
 }
 
 // this method is called when your extension is deactivated

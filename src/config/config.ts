@@ -1,4 +1,4 @@
-const config: Config = {
+export const config: Config = {
     configurations: [{
         name: 'dev',
         local: {
@@ -34,5 +34,3 @@ const config: Config = {
         }
     }]
 };
-
-export = config;

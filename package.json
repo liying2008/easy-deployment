@@ -12,20 +12,31 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:easy-deployment.deploy"
+		"onCommand:easy-deployment.buildAndDeploy",
+		"onCommand:easy-deployment.deployOnly"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "easy-deployment.deploy",
-				"title": "Easy Deployment: Build & deploy"
+				"category": "Easy Deployment",
+				"command": "easy-deployment.buildAndDeploy",
+				"title": "Build & deploy"
+			},
+			{
+				"category": "Easy Deployment",
+				"command": "easy-deployment.deployOnly",
+				"title": "Deploy only"
 			}
 		],
 		"menus": {
 			"explorer/context": [
 				{
-					"command": "easy-deployment.deploy",
+					"command": "easy-deployment.buildAndDeploy",
+					"group": "navigation"
+				},
+				{
+					"command": "easy-deployment.deployOnly",
 					"group": "navigation"
 				}
 			]

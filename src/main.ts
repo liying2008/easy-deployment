@@ -5,7 +5,7 @@ import { getProjectPath, outputMsg } from './util';
 import { build } from './build';
 import { Uri } from 'vscode';
 
-export async function start(selectedPath: string|undefined) {
+export async function start(selectedPath: string|undefined, deployOnly: boolean) {
     // 获取配置
     const workspaceConfiguration = vscode.workspace.getConfiguration('easyDeployment');
 
@@ -35,26 +35,30 @@ export async function start(selectedPath: string|undefined) {
         return value.name === selectedProfile;
     })[0];
     // 应用构建路径
-    const buildPath = getBuildPath(selectedPath, selectedConfig.local.projectPath);
+    const buildPath = getBuildPath(selectedPath, selectedConfig.local?.projectPath);
     console.log('buildPath', buildPath);
     if (!buildPath) {
         // 构建路径为空
         vscode.window.showErrorMessage('Build path is empty.');
         return;
     }
-    // 构建应用
-    const buildCmd = selectedConfig.local.buildCmd || 'yarn build';
-    outputMsg('Building, please wait a moment...\n');
-    try {
-        const { stdout, stderr } = await build(buildCmd, buildPath);
-        outputMsg('stdout:\n' + (stdout || '(Empty)'));
-        outputMsg('\nstderr:\n' + (stderr || '(Empty)'));
-    } catch(err) {
-        console.log(err);
-        outputMsg(err.message);
-        outputMsg('Build failed, cancel deployment.');
-        return;
+    if (!deployOnly) {
+        // 构建应用
+        const buildCmd = selectedConfig.local.buildCmd || 'yarn build';
+        outputMsg('Building, please wait a moment...\n');
+        try {
+            const { stdout, stderr } = await build(buildCmd, buildPath);
+            outputMsg('stdout:\n' + (stdout || '(Empty)'));
+            outputMsg('\nstderr:\n' + (stderr || '(Empty)'));
+        } catch(err) {
+            console.log(err);
+            outputMsg(err.message);
+            outputMsg('Build failed, cancel deployment.');
+            return;
+        }
     }
+    // 打包
+
 }
 
 function getBuildPath(selectedPath: string|undefined, configProjectPath: string|undefined): string|undefined {
