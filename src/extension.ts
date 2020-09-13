@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { start } from './main';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -20,8 +21,10 @@ export function activate(context: vscode.ExtensionContext) {
 		// 如果从命令进入，则path为空，从explorer右键菜单进入，则 path.fsPath 为所选绝对路径
 		if (path && path.fsPath) {
 			// 使用选择的路径
+			start(path.fsPath);
 		} else {
 			// 使用配置路径
+			start(undefined);
 		}
 	});
 

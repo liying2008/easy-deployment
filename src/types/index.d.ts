@@ -4,9 +4,9 @@ interface Config {
 
 interface Configuration {
     name: string
-    ssh?: SSHConfiguration
-    local?: LocalConfiguration
-    remote?: RemoteConfiguration
+    ssh: SSHConfiguration
+    local: LocalConfiguration
+    remote: RemoteConfiguration
 }
 
 interface SSHConfiguration {
@@ -17,7 +17,7 @@ interface SSHConfiguration {
 }
 
 interface LocalConfiguration {
-    projectPath: string
+    projectPath?: string
     outputDir: string
     buildCmd: string
 }
