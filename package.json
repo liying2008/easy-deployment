@@ -4,7 +4,13 @@
 	"description": "Easy compilation, packaging and deployment",
 	"version": "0.0.1",
 	"publisher": "LiYing",
-	"repository": "https://github.com/liying2008/easy-deployment",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/liying2008/easy-deployment"
+	},
+	"bugs": {
+		"url": "https://github.com/liying2008/easy-deployment/issues"
+	},
 	"engines": {
 		"vscode": "^1.49.0"
 	},

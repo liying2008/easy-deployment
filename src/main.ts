@@ -5,6 +5,8 @@ import { getProjectPath, outputMsg } from './util';
 import { build } from './build';
 import { Uri } from 'vscode';
 
+const displayName = require('../package.json').displayName;
+
 export async function start(selectedPath: string|undefined, deployOnly: boolean) {
     // 获取配置
     const workspaceConfiguration = vscode.workspace.getConfiguration('easyDeployment');
@@ -28,9 +30,14 @@ export async function start(selectedPath: string|undefined, deployOnly: boolean)
     });
     // 显示选择
     const selectedProfile = await vscode.window.showQuickPick(profileNames, {
-        canPickMany: false
+        canPickMany: false,
+        placeHolder: 'Please select a configuration'
     });
     console.log('selectedProfile', selectedProfile);
+    if (selectedProfile === undefined) {
+        // 没有选择任何 profile
+        return;
+    }
     const selectedConfig = configurations.filter((value: Configuration) => {
         return value.name === selectedProfile;
     })[0];
@@ -46,14 +53,28 @@ export async function start(selectedPath: string|undefined, deployOnly: boolean)
         // 构建应用
         const buildCmd = selectedConfig.local.buildCmd || 'yarn build';
         outputMsg('Building, please wait a moment...\n');
-        try {
-            const { stdout, stderr } = await build(buildCmd, buildPath);
-            outputMsg('stdout:\n' + (stdout || '(Empty)'));
-            outputMsg('\nstderr:\n' + (stderr || '(Empty)'));
-        } catch(err) {
+        const buildPromise = build(buildCmd, buildPath);
+        let buildResult = false;
+        buildPromise.then(({stdout, stderr}) => {
+            buildResult = true;
+            outputMsg('output:\n' + (stdout + stderr || '(Empty)'));
+            outputMsg('\nBuild successfully!');
+        }).catch(err => {
+            buildResult = false;
             console.log(err);
             outputMsg(err.message);
             outputMsg('Build failed, cancel deployment.');
+        });
+        vscode.window.withProgress(
+            {
+              title: `${displayName}: Building...`,
+              location: vscode.ProgressLocation.Window
+            },
+            () => buildPromise
+        );
+
+        if (!buildResult) {
+            // 构建失败，取消部署
             return;
         }
     }
