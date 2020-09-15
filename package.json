@@ -68,25 +68,30 @@
 									},
 									"local": {
 										"type": "object",
-										"description": "Configuration of local project",
+										"description": "Configuration of local project.",
 
 										"properties": {
 											"projectPath": {
 												"type": "string",
-												"default": "."
+												"default": ".",
+												"description": "Project root path."
 											},
 											"outputDir": {
 												"type": "string",
-												"default": "dist"
+												"default": "dist",
+												"description": "Compiled product output path."
 											},
 											"buildCmd": {
 												"type": "string",
+												"default": "yarn build",
 												"description": "Build command for local project."
 											}
 										}
 									},
 									"remote": {
 										"type": "object",
+										"description": "Configuration of remote server.",
+
 										"properties": {
 											"deploymentPath": {
 												"type": "string",
@@ -96,19 +101,25 @@
 									},
 									"ssh": {
 										"type": "object",
+										"description": "Configuration of ssh connection.",
+
 										"properties": {
 											"host": {
-												"type": "string"
+												"type": "string",
+												"description": "Hostname or IP address of the server."
 											},
 											"port": {
 												"type": "number",
-												"default": 22
+												"default": 22,
+												"description": "Port number of the server."
 											},
 											"username": {
-												"type": "string"
+												"type": "string",
+												"description": "Username for authentication."
 											},
 											"password": {
-												"type": "string"
+												"type": "string",
+												"description": "Password for password-based user authentication."
 											}
 										}
 									}

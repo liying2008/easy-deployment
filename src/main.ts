@@ -7,7 +7,7 @@ import { Uri } from 'vscode';
 
 const displayName = require('../package.json').displayName;
 
-export async function start(selectedPath: string|undefined, deployOnly: boolean) {
+export async function start(deployOnly: boolean) {
     // 获取配置
     const workspaceConfiguration = vscode.workspace.getConfiguration('easyDeployment');
 
@@ -42,7 +42,7 @@ export async function start(selectedPath: string|undefined, deployOnly: boolean)
         return value.name === selectedProfile;
     })[0];
     // 应用构建路径
-    const buildPath = getBuildPath(selectedPath, selectedConfig.local?.projectPath);
+    const buildPath = getBuildPath(selectedConfig.local?.projectPath);
     console.log('buildPath', buildPath);
     if (!buildPath) {
         // 构建路径为空
@@ -82,10 +82,7 @@ export async function start(selectedPath: string|undefined, deployOnly: boolean)
 
 }
 
-function getBuildPath(selectedPath: string|undefined, configProjectPath: string|undefined): string|undefined {
-    if (selectedPath) {
-        return selectedPath;
-    }
+function getBuildPath(configProjectPath: string|undefined): string|undefined {
     const projectPath = getProjectPath();
     if (projectPath === undefined) {
         vscode.window.showErrorMessage('No open workspace!');
