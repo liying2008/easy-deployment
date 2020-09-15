@@ -1,4 +1,7 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as archiver from 'archiver';
 
 const displayName = require('../../package.json').displayName;
 
@@ -22,4 +25,18 @@ const outputChannel = vscode.window.createOutputChannel(displayName);
 export function outputMsg(msg: string) {
     outputChannel.appendLine(msg);
     outputChannel.show();
+}
+
+
+export function compress(sourcePath: string, outputPath: string) {
+    let output = fs.createWriteStream(outputPath);
+    let archive = archiver('tar', {
+        gzip: true,
+        gzipOptions: {
+            level: 5
+        }
+    });
+    archive.pipe(output);
+    archive.directory(sourcePath, path.basename(sourcePath));
+    return archive.finalize();
 }

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { getProjectPath, outputMsg } from './util';
+import { getProjectPath, outputMsg, compress } from './util';
 import { build } from './build';
 import { Uri } from 'vscode';
 
@@ -71,7 +71,7 @@ export async function start(deployOnly: boolean) {
         const buildCmd = selectedConfig.local.buildCmd;
         if (!buildCmd) {
             // 构建命令为空
-            vscode.window.showErrorMessage('The build command cannot be empty.');
+            vscode.window.showErrorMessage('The build command cannot be set to empty.');
             openSettings();
             return;
         }
@@ -101,8 +101,23 @@ export async function start(deployOnly: boolean) {
             return;
         }
     }
-    // 打包
+    // 打包压缩
+    const configOutputDir = selectedConfig.local?.outputDir;
+    if (!configOutputDir) {
+        // 输出目录为空
+        vscode.window.showErrorMessage('The output directory cannot be set to empty.');
+        openSettings();
+        return;
+    }
+    outputMsg('Start packing and compress...');
+    const realOutputPath = getOutputPath(configOutputDir);
+    const currentTime = new Date().getTime();
+    const outputFilepath = `${realOutputPath}-${currentTime}.tar.gz`;
+    await compress(realOutputPath!, outputFilepath);
+    const outputFilename = path.parse(outputFilepath).base;
+    outputMsg('Packaging and compression completed.\nThe output file name is ' + outputFilepath);
 
+    // 建立 SSH 连接
 }
 
 function getBuildPath(configProjectPath: string|undefined): string|undefined {
@@ -115,6 +130,15 @@ function getBuildPath(configProjectPath: string|undefined): string|undefined {
         configProjectPath = '.';
     }
     return path.join(projectPath, configProjectPath);
+}
+
+function getOutputPath(configOutputDir: string): string|undefined {
+    const projectPath = getProjectPath();
+    if (projectPath === undefined) {
+        vscode.window.showErrorMessage('No open workspace!');
+        return undefined;
+    }
+    return path.join(projectPath, configOutputDir);
 }
 
 async function openSettings() {
