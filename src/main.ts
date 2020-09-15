@@ -16,7 +16,7 @@ export async function start(deployOnly: boolean) {
 
     const configurations = config.configurations;
     console.log('configurations', configurations);
-    if (!configurations) {
+    if (!configurations || configurations.length === 0) {
         // 缺少 configurations 配置
         vscode.window.showErrorMessage('Missing configurations.');
         openSettings();
@@ -25,19 +25,36 @@ export async function start(deployOnly: boolean) {
     // 获取配置名称列表
     const profileNames = configurations.map((value: Configuration) => {
         return value.name;
-    }).filter((value: string) => {
+    }).filter((value: string|undefined) => {
         return !!value;
     });
-    // 显示选择
-    const selectedProfile = await vscode.window.showQuickPick(profileNames, {
-        canPickMany: false,
-        placeHolder: 'Please select a configuration'
-    });
-    console.log('selectedProfile', selectedProfile);
-    if (selectedProfile === undefined) {
-        // 没有选择任何 profile
+
+    // console.log('profileNames', profileNames);
+    if (!profileNames || profileNames.length === 0) {
+        // 配置不完整
+        vscode.window.showErrorMessage('Incomplete configuration.');
+        openSettings();
         return;
     }
+
+    let selectedProfile: string|undefined = undefined;
+    if (profileNames.length > 1) {
+        // 可选项大于1，显示选择
+        selectedProfile = await vscode.window.showQuickPick(profileNames, {
+            canPickMany: false,
+            placeHolder: 'Please select a configuration'
+        });
+        console.log('selectedProfile', selectedProfile);
+        if (selectedProfile === undefined) {
+            // 没有选择任何 profile
+            return;
+        }
+    } else {
+        // 可选项只有一个，默认选择即可
+        selectedProfile = profileNames[0];
+    }
+
+    // 选中的配置
     const selectedConfig = configurations.filter((value: Configuration) => {
         return value.name === selectedProfile;
     })[0];
@@ -51,7 +68,13 @@ export async function start(deployOnly: boolean) {
     }
     if (!deployOnly) {
         // 构建应用
-        const buildCmd = selectedConfig.local.buildCmd || 'yarn build';
+        const buildCmd = selectedConfig.local.buildCmd;
+        if (!buildCmd) {
+            // 构建命令为空
+            vscode.window.showErrorMessage('The build command cannot be empty.');
+            openSettings();
+            return;
+        }
         outputMsg('Building, please wait a moment...\n');
         const buildPromise = build(buildCmd, buildPath);
         let buildResult = false;
