@@ -28,6 +28,7 @@ export async function start(deployOnly: boolean) {
         }
     }
     // 打包压缩
+    outputMsg('Start packing and compress...');
     const configOutputDir = selectedConfig.local?.outputDir;
     if (!configOutputDir) {
         // 输出目录为空
@@ -35,13 +36,20 @@ export async function start(deployOnly: boolean) {
         openSettings();
         return;
     }
-    outputMsg('Start packing and compress...');
+
     const realOutputPath = getOutputPath(configOutputDir);
     const currentTime = new Date().getTime();
     const outputFilepath = `${realOutputPath}-${currentTime}.tar.gz`;
-    await compress(realOutputPath!, outputFilepath);
+    try {
+        await compress(realOutputPath!, outputFilepath);
+    } catch(err) {
+        console.log(err);
+        outputMsg('\n' + err.message);
+        outputMsg('\nFile compression failed, cancel deployment.');
+        return;
+    }
     const outputFilename = path.parse(outputFilepath).base;
-    outputMsg('Packaging and compression completed.\nThe output file name is ' + outputFilepath);
+    outputMsg('\nPackaging and compression completed.\nThe output file name is ' + outputFilepath);
 
     // 建立 SSH 连接
 }

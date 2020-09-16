@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as archiver from 'archiver';
+import { outputMsg } from './panel';
 
 
 /**
@@ -16,6 +17,20 @@ export function compress(sourcePath: string, outputPath: string) {
             level: 5
         }
     });
+
+    // 显示当前正在压缩的文件
+    archive.on('entry', (entry: archiver.EntryData) => {
+        const entryName = entry.name;
+        // console.log(`Compressing file: ${entryName}`);
+        outputMsg(`Compressing file: ${entryName}`);
+    });
+
+    // good practice to catch this error explicitly
+    archive.on('error', (err) => {
+        console.log('compress error: ', err);
+        throw err;
+    });
+
     archive.pipe(output);
     archive.directory(sourcePath, path.basename(sourcePath));
     return archive.finalize();
