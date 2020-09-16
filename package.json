@@ -92,6 +92,10 @@
 											"deploymentPath": {
 												"type": "string",
 												"description": "Remote deployment path."
+											},
+											"postCmd": {
+												"type": "string",
+												"description": "Command executed after deployment."
 											}
 										}
 									},

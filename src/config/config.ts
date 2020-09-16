@@ -1,4 +1,5 @@
-export const config: Config = {
+// 配置结构
+const config: Config = {
     configurations: [{
         name: 'dev',
         local: {
@@ -8,6 +9,7 @@ export const config: Config = {
         },
         remote: {
             deploymentPath: '~/test/demoDev',
+            postCmd: '',
         },
         ssh: {
             host: "192.168.1.200",
@@ -25,6 +27,7 @@ export const config: Config = {
         },
         remote: {
             deploymentPath: '~/test/demoProd',
+            postCmd: '',
         },
         ssh: {
             host: "192.168.1.200",

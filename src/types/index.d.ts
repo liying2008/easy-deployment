@@ -24,4 +24,5 @@ interface LocalConfiguration {
 
 interface RemoteConfiguration {
     deploymentPath: string
+    postCmd: string
 }

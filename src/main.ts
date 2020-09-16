@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { openSettings, outputMsg, compress, getActivatedConfig, getBuildPath, getOutputPath } from './util';
 import { build } from './builder';
+import { deploy } from './ssh';
 
 
 export async function start(deployOnly: boolean) {
@@ -28,7 +29,7 @@ export async function start(deployOnly: boolean) {
         }
     }
     // 打包压缩
-    outputMsg('Start packing and compress...');
+    outputMsg('\nStart packing and compress...');
     const configOutputDir = selectedConfig.local?.outputDir;
     if (!configOutputDir) {
         // 输出目录为空
@@ -51,6 +52,15 @@ export async function start(deployOnly: boolean) {
     const outputFilename = path.parse(outputFilepath).base;
     outputMsg('\nPackaging and compression completed.\nThe output file name is ' + outputFilepath);
 
-    // 建立 SSH 连接
+    // 执行部署：建立 SSH 连接，上传文件，执行后续命令
+    outputMsg('\nStart deployment...');
+    try {
+        await deploy(selectedConfig, outputFilepath);
+    } catch(err) {
+        console.log(err);
+        outputMsg('\n' + err.message);
+        outputMsg('\nDeployment failed.');
+        return;
+    }
 }
 
