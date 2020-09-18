@@ -93,6 +93,21 @@
 												"type": "string",
 												"description": "Remote deployment path."
 											},
+											"backupOriginalFiles": {
+												"type": "boolean",
+												"default": false,
+												"description": "Do you need to back up the original files?"
+											},
+											"backupTo": {
+												"type": "string",
+												"default": "~/backup",
+												"description": "Backup path of the original files."
+											},
+											"deleteOriginalFiles": {
+												"type": "boolean",
+												"default": false,
+												"description": "Do you need to delete the original files?"
+											},
 											"postCmd": {
 												"type": "string",
 												"description": "Command executed after deployment."

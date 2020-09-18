@@ -46,9 +46,24 @@ export async function openSettings() {
  * @param pathname path
  */
 export function trimTrailingSlash(pathname: string): string {
+    if (pathname === '/') {
+        return pathname;
+    }
     if (pathname.endsWith('\\') || pathname.endsWith('/')) {
         return pathname.substring(0, pathname.length - 1);
     } else {
         return pathname;
     }
+}
+
+export function getFormattedCurrentTime(): string {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+
+    return `${year}${month}${day}${hour}${minute}${second}`;
 }

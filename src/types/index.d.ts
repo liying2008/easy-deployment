@@ -24,5 +24,8 @@ interface LocalConfiguration {
 
 interface RemoteConfiguration {
     deploymentPath: string
+    backupOriginalFiles: boolean
+    backupTo: string
+    deleteOriginalFiles: boolean
     postCmd: string
 }
