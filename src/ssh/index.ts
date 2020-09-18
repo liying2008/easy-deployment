@@ -5,7 +5,7 @@ import { NodeSSH } from 'node-ssh';
 import { openSettings, outputMsg } from '../util';
 
 
-const ssh = new NodeSSH();
+let ssh = new NodeSSH();
 
 export async function deploy(selectedConfig: Configuration, outputFilepath: string): Promise<boolean> {
     const sshConfig = selectedConfig.ssh;
@@ -24,7 +24,7 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
     }
     // 建立 ssh 连接
     outputMsg('Establish ssh connection.');
-    await ssh.connect({
+    ssh = await ssh.connect({
         host: sshConfig.host,
         username: sshConfig.username,
         port: sshConfig.port || 22,

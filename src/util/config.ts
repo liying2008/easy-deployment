@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { openSettings, getProjectPath } from './misc';
+import { openSettings, getProjectPath, trimTrailingSlash } from './misc';
 
 
 /**
@@ -73,7 +73,9 @@ export function getBuildPath(configProjectPath: string|undefined): string|undefi
     if (configProjectPath === undefined) {
         configProjectPath = '.';
     }
-    return path.join(projectPath, configProjectPath);
+    const absolutePath = trimTrailingSlash(path.normalize(path.join(projectPath, configProjectPath)));
+    console.log('getBuildPath::absolutePath,', absolutePath);
+    return absolutePath;
 }
 
 /**
@@ -90,5 +92,7 @@ export function getOutputPath(configOutputDir: string|undefined): string|undefin
         vscode.window.showErrorMessage('The product output directory cannot be set to empty.');
         return undefined;
     }
-    return path.join(projectPath, configOutputDir);
+    const absolutePath = trimTrailingSlash(path.normalize(path.join(projectPath, configOutputDir)));
+    console.log('getOutputPath::absolutePath,', absolutePath);
+    return absolutePath;
 }

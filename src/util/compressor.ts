@@ -8,8 +8,9 @@ import { outputMsg } from './panel';
  * 打包并压缩文件
  * @param sourcePath 待压缩的文件路径
  * @param outputPath 压缩后的输出文件（含路径）
+ * @param isFile 待压缩的是否是文件
  */
-export function compress(sourcePath: string, outputPath: string) {
+export function compress(sourcePath: string, outputPath: string, isFile: boolean) {
     let output = fs.createWriteStream(outputPath);
     let archive = archiver('tar', {
         gzip: true,
@@ -32,6 +33,11 @@ export function compress(sourcePath: string, outputPath: string) {
     });
 
     archive.pipe(output);
-    archive.directory(sourcePath, path.basename(sourcePath));
+    if (isFile) {
+        const sourceName = path.parse(sourcePath).base;
+        archive.file(sourcePath, { name: sourceName });
+    } else {
+        archive.directory(sourcePath, false);
+    }
     return archive.finalize();
 }

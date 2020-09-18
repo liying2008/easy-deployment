@@ -40,3 +40,15 @@ export async function openSettings() {
     }
     let success = await vscode.commands.executeCommand('vscode.open', uri);
 }
+
+/**
+ * 删除路径结尾的 / 或 \\ （如果存在的话）
+ * @param pathname path
+ */
+export function trimTrailingSlash(pathname: string): string {
+    if (pathname.endsWith('\\') || pathname.endsWith('/')) {
+        return pathname.substring(0, pathname.length - 1);
+    } else {
+        return pathname;
+    }
+}

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 import * as path from 'path';
 import { openSettings, outputMsg, compress, getActivatedConfig, getBuildPath, getOutputPath } from './util';
 import { build } from './builder';
@@ -39,10 +40,27 @@ export async function start(deployOnly: boolean) {
     }
 
     const realOutputPath = getOutputPath(configOutputDir);
+    if (realOutputPath === undefined) {
+        // 输出目录解析失败
+        return;
+    }
+    const fileStat = fs.statSync(realOutputPath);
+    let outputIsFile = false;
+
+    if (fileStat.isDirectory()) {
+        outputIsFile = false;
+    } else if (fileStat.isFile()) {
+        outputIsFile = true;
+    } else {
+        // 其他类型的文件，不支持
+        outputMsg('File of this type is not supported!');
+        return;
+    }
+
     const currentTime = new Date().getTime();
     const outputFilepath = `${realOutputPath}-${currentTime}.tar.gz`;
     try {
-        await compress(realOutputPath!, outputFilepath);
+        await compress(realOutputPath, outputFilepath, outputIsFile);
     } catch(err) {
         console.log(err);
         outputMsg('\n' + err.message);
