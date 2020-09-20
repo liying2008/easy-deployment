@@ -2,8 +2,15 @@
 	"name": "easy-deployment",
 	"displayName": "Easy Deployment",
 	"description": "Deploy your frontend project quickly and easily.",
+	"keywords": [
+		"frontend",
+		"deployment",
+		"deploy",
+		"publish"
+    ],
 	"version": "0.0.1",
 	"publisher": "LiYing",
+	"icon": "images/icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/liying2008/easy-deployment"
