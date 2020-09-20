@@ -1,6 +1,6 @@
-# easy-deployment README
+# Easy Deployment
 
-This is the README for your extension "easy-deployment". After writing up a brief description, we recommend including the following sections.
+Deploy your frontend project quickly and easily.
 
 ## Features
 
