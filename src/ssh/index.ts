@@ -7,20 +7,20 @@ import { getFormattedCurrentTime, openSettings, outputMsg, trimTrailingSlash } f
 
 let ssh = new NodeSSH();
 
-export async function deploy(selectedConfig: Configuration, outputFilepath: string): Promise<boolean> {
+export async function deploy(selectedConfig: Configuration, outputFilepath: string): Promise<void> {
     const sshConfig = selectedConfig.ssh;
     const remoteConfig = selectedConfig.remote;
     if (!sshConfig || !sshConfig.host || !sshConfig.username) {
         // 未配置host或username
         vscode.window.showErrorMessage('Host or username is not configured.');
         openSettings();
-        return Promise.resolve(false);
+        return Promise.reject();
     }
     if (!remoteConfig || !remoteConfig.deploymentPath) {
         // 未配置远程部署路径
         vscode.window.showErrorMessage('The remote deployment path is not configured.');
         openSettings();
-        return Promise.resolve(false);
+        return Promise.reject();
     }
     // 建立 ssh 连接
     outputMsg('Establish ssh connection.');
@@ -32,23 +32,24 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
     });
     // 上传文件
     let deploymentPath = remoteConfig.deploymentPath;
-    const postCmd = remoteConfig.postCmd;
     const outputFilename = path.parse(outputFilepath).base;
     deploymentPath = getValidRemotePath(deploymentPath);
     // 去掉路径末尾的 /
-    deploymentPath = trimTrailingSlash(deploymentPath);
+    const parentDeploymentPath = trimTrailingSlash(path.posix.dirname(deploymentPath));
 
-    const finalDeploymentPath = deploymentPath + '/' + outputFilename;
-    console.log('finalDeploymentPath', finalDeploymentPath);
-    outputMsg(`Upload ${outputFilepath} to ${remoteConfig.deploymentPath}`);
+    const finalUploadPath = parentDeploymentPath + '/' + outputFilename;
+    console.log('finalUploadPath', finalUploadPath);
+    outputMsg(`Upload ${outputFilepath} to ${finalUploadPath}`);
     // 开始上传文件
     try {
-        await ssh.putFile(outputFilepath, finalDeploymentPath);
+        await ssh.putFile(outputFilepath, finalUploadPath);
         outputMsg('\nUpload successfully');
     } catch (error) {
         console.log(error);
         outputMsg('\nUpload failed:\n' + error.message);
-        return Promise.resolve(false);
+        // 断开连接
+        ssh.dispose();
+        return Promise.reject();
     }
 
     // 备份原有文件
@@ -60,7 +61,9 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
             outputMsg('\nBackup successfully');
         } else {
             outputMsg('\nBackup failed, cancel deployment.');
-            return Promise.resolve(false);
+            // 断开连接
+            ssh.dispose();
+            return Promise.reject();
         }
     }
 
@@ -73,10 +76,45 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
             outputMsg('\nDelete successfully');
         } else {
             outputMsg('\nDelete failed, cancel deployment.');
-            return Promise.resolve(false);
+            // 断开连接
+            ssh.dispose();
+            return Promise.reject();
         }
     }
-    return true;
+
+    // 解压上传的文件，即部署
+    outputMsg('\nStart to extract target file');
+    const success = await extractFile(ssh, remoteConfig, finalUploadPath);
+    if (success) {
+        outputMsg('\nExtract successfully');
+    } else {
+        outputMsg('\nExtract failed. Deploy failed.');
+        // 断开连接
+        ssh.dispose();
+        return Promise.reject();
+    }
+
+    // 删除上传的文件
+    console.log('删除上传的文件：', finalUploadPath);
+    await deleteUploadedFile(ssh, finalUploadPath);
+
+    // 执行后续命令
+    const postCmd = remoteConfig.postCmd;
+    if (postCmd && postCmd.trim()) {
+        outputMsg('\nStart to execute post command');
+        const success = await executePostCmd(ssh, remoteConfig);
+        if (success) {
+            outputMsg('\nPost command executed successfully');
+        } else {
+            outputMsg('\nFailed to execute post command');
+            // 断开连接
+            ssh.dispose();
+            return Promise.reject();
+        }
+    }
+    // 断开连接
+    ssh.dispose();
+    return Promise.resolve();
 }
 
 
@@ -95,13 +133,18 @@ async function backupFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
 
     const backupName = `${basename}-${getFormattedCurrentTime()}`;
     const finalBackupPath = `${trimTrailingSlash(backupTo)}/${backupName}`;
-    const result = await ssh.execCommand(`cp -r "${deploymentPath}" "${finalBackupPath}"`);
+
+    const command = `cp -prf "${deploymentPath}" "${finalBackupPath}"`;
+    console.log('backupFiles::command', command);
+
+    const result = await ssh.execCommand(command);
     console.log('backupFiles::CODE: ' + result.code);
     console.log('backupFiles::STDOUT: ' + result.stdout);
     console.log('backupFiles::STDERR: ' + result.stderr);
 
     if (result.code !== null && result.code !== 0) {
         // 备份文件失败
+        outputMsg('\nBackup failed:' + result.stderr);
         return Promise.resolve(false);
     }
 
@@ -114,7 +157,7 @@ async function deleteFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
     const dirname = path.posix.dirname(deploymentPath);
     const basename = path.posix.basename(deploymentPath);
 
-    const command = `test -f ${basename} && rm -f ${basename}; test -d ${basename} && rm -fr ${basename} && mkdir ${basename}`;
+    const command = `test -f "${basename}" && rm -f "${basename}"; test -d "${basename}" && rm -fr "${basename}" && mkdir "${basename}"`;
     console.log('deleteFiles::command', command);
 
     const result = await ssh.execCommand(command, { cwd: dirname });
@@ -124,6 +167,72 @@ async function deleteFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
 
     if (result.code !== null && result.code !== 0) {
         // 删除文件失败
+        outputMsg('\nDelete failed:' + result.stderr);
+        return Promise.resolve(false);
+    }
+
+    return Promise.resolve(true);
+}
+
+async function extractFile(ssh: NodeSSH, remoteConfig: RemoteConfiguration, zipPath: string): Promise<boolean> {
+    let deploymentPath = remoteConfig.deploymentPath;
+    deploymentPath = getValidRemotePath(deploymentPath);
+
+    const mkdirCmd = `test ! -d "${deploymentPath}" && mkdir -p "${deploymentPath}"`;
+
+    const command = `${mkdirCmd}; tar -xvf "${zipPath}" -C "${deploymentPath}"`;
+    console.log('extractFile::command', command);
+
+    const result = await ssh.execCommand(command);
+    console.log('extractFile::CODE: ' + result.code);
+    console.log('extractFile::STDOUT: ' + result.stdout);
+    console.log('extractFile::STDERR: ' + result.stderr);
+
+    if (result.code !== null && result.code !== 0) {
+        // 解压文件失败
+        outputMsg('\nExtract failed:' + result.stderr);
+        return Promise.resolve(false);
+    }
+
+    return Promise.resolve(true);
+}
+
+async function deleteUploadedFile(ssh: NodeSSH, zipPath: string): Promise<boolean> {
+    const command = `rm -f "${zipPath}"`;
+    console.log('deleteUploadedFile::command', command);
+
+    const result = await ssh.execCommand(command);
+    console.log('deleteUploadedFile::CODE: ' + result.code);
+    console.log('deleteUploadedFile::STDOUT: ' + result.stdout);
+    console.log('deleteUploadedFile::STDERR: ' + result.stderr);
+
+    if (result.code !== null && result.code !== 0) {
+        // 删除文件失败
+        return Promise.resolve(false);
+    }
+
+    return Promise.resolve(true);
+}
+
+async function executePostCmd(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Promise<boolean> {
+    let deploymentPath = remoteConfig.deploymentPath;
+    deploymentPath = getValidRemotePath(deploymentPath);
+    deploymentPath = path.posix.normalize(deploymentPath);
+
+    const postCmd = remoteConfig.postCmd;
+    
+    console.log('executePostCmd::command', postCmd);
+
+    const result = await ssh.execCommand(postCmd, { cwd: deploymentPath });
+    console.log('executePostCmd::CODE: ' + result.code);
+    console.log('executePostCmd::STDOUT: ' + result.stdout);
+    console.log('executePostCmd::STDERR: ' + result.stderr);
+
+    // 输出执行结果
+    outputMsg('output:\n' + (result.stdout + result.stderr || '(Empty)'));
+
+    if (result.code !== null && result.code !== 0) {
+        // 执行命令失败
         return Promise.resolve(false);
     }
 

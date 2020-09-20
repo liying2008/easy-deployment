@@ -74,10 +74,12 @@ export async function start(deployOnly: boolean) {
     outputMsg('\nStart deployment...');
     try {
         await deploy(selectedConfig, outputFilepath);
+        outputMsg('\nSuccessful deployment!');
+        outputMsg('\nAll done!');
     } catch(err) {
         console.log(err);
         outputMsg('\n' + err.message);
-        outputMsg('\nDeployment failed.');
+        outputMsg('\nDeployment failed!');
         return;
     }
 }
