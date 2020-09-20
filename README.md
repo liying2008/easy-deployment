@@ -1,65 +1,65 @@
-# Easy Deployment
+# Easy Deployment 
 
-Deploy your frontend project quickly and easily.
+[![Version](https://vsmarketplacebadge.apphb.com/version-short/liying.easy-deployment.svg)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
+[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/liying.easy-deployment.svg)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
+[![Rating](https://vsmarketplacebadge.apphb.com/rating-short/liying.easy-deployment.svg)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
+
+**Deploy your frontend project quickly and easily.**
+
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Select "Build & deploy" to build your project and deploy it to a remote server. 
+- Selecting "Deploy only" will only execute the deployment process.
 
-For example if there is an image subfolder under your extension project workspace:
+![Extension menus](https://github.com/liying2008/easy-deployment/blob/master/pics/extension_commands.png)
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+```json
+  "easyDeployment.config": {
+    "configurations": [
+      {
+        "name": "dev",
+        "local": {
+          "projectPath": ".",
+          "buildCmd": "yarn build",
+          "outputDir": "dist/spa",
+        },
+        "remote": {
+          "deploymentPath": "~/nginx/html",
+          "backupOriginalFiles": true,
+          "backupTo": "~/backup",
+          "deleteOriginalFiles": true,
+          "postCmd": "ls -alF"
+        },
+        "ssh": {
+          "host": "192.168.1.200",
+          "port": 22,
+          "username": "pi",
+          "password": "",
+          "privateKey": "~/.ssh/id_rsa"
+        }
+      }
+    ]
+  }
+```
 
-## Known Issues
+* Please set it according to your actual needs.
+* You can choose between `password` and `privateKey` in the ssh configuration.
+* There can be multiple configurations in the outer configurations, and the `name` attribute cannot be repeated.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
 
-## Release Notes
+## Quick Start
 
-Users appreciate release notes as you update your extension.
+- Install [Easy Deployment](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment).
+- Configure `easyDeployment.config` in `settings.json` in the workspace.
+- Right click in Explorer and select `Build & deploy` or `Deploy only`.
 
-### 1.0.0
 
-Initial release of ...
+## License
 
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+MIT © [Li Ying](https://github.com/liying2008) 
