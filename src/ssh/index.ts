@@ -24,12 +24,30 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
     }
     // 建立 ssh 连接
     outputMsg('Establish ssh connection.');
-    ssh = await ssh.connect({
+    const givenConfig: SSHConfiguration = {
         host: sshConfig.host,
         username: sshConfig.username,
         port: sshConfig.port || 22,
-        password: sshConfig.password || ''
-    });
+    };
+    if (sshConfig.privateKey) {
+        let privateKey = sshConfig.privateKey;
+        if (privateKey.startsWith('~/') || privateKey.startsWith('~\\')) {
+            // ~ 替换为 用户 HOME 目录
+            const userHome = process.env.HOME || process.env.USERPROFILE;
+            console.log('deploy::userHome', userHome);
+            privateKey = path.join(userHome!, privateKey.substring(2, privateKey.length));
+        }
+        givenConfig['privateKey'] = privateKey;
+    } else {
+        givenConfig['password'] = sshConfig.password || '';
+    }
+    ssh = await ssh.connect(givenConfig);
+    if (!ssh.isConnected()) {
+        // 连接未建立
+        outputMsg('\nConnection not established.');
+        return Promise.reject();
+    }
+    
     // 上传文件
     let deploymentPath = remoteConfig.deploymentPath;
     const outputFilename = path.parse(outputFilepath).base;

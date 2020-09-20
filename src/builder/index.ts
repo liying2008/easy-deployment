@@ -29,7 +29,7 @@ export async function build(selectedConfig: Configuration, buildPath: string): P
         return Promise.resolve(true);
     }).catch(err => {
         console.log(err);
-        outputMsg(err.message);
+        outputMsg('ERROR: ' + err.message);
         outputMsg('\nBuild failed, cancel deployment.\n');
         return Promise.resolve(false);
     });

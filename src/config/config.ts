@@ -19,6 +19,7 @@ const config: Config = {
             port: 22,
             username: "pi",
             password: "123456",
+            privateKey: undefined,
         }
     }]
 };

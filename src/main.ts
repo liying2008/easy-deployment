@@ -63,7 +63,7 @@ export async function start(deployOnly: boolean) {
         await compress(realOutputPath, outputFilepath, outputIsFile);
     } catch(err) {
         console.log(err);
-        outputMsg('\n' + err.message);
+        outputMsg('\nERROR: ' + err.message);
         outputMsg('\nFile compression failed, cancel deployment.');
         return;
     }
@@ -78,7 +78,7 @@ export async function start(deployOnly: boolean) {
         outputMsg('\nAll done!');
     } catch(err) {
         console.log(err);
-        outputMsg('\n' + err.message);
+        outputMsg('\nERROR: ' + err.message);
         outputMsg('\nDeployment failed!');
         return;
     }

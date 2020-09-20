@@ -141,6 +141,10 @@
 											"password": {
 												"type": "string",
 												"description": "Password for password-based user authentication."
+											},
+											"privateKey": {
+												"type": "string",
+												"description": "Private key for either key-based or hostbased user authentication (OpenSSH format)."
 											}
 										}
 									}
@@ -157,7 +161,6 @@
 		"webpack": "webpack --mode development",
 		"webpack-dev": "webpack --mode development --watch",
 		"test-compile": "tsc -p ./",
-		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts"
 	},
 	"devDependencies": {
