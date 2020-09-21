@@ -8,7 +8,7 @@
 		"deploy",
 		"publish"
     ],
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "LiYing",
 	"icon": "images/icon.png",
 	"repository": {
@@ -34,12 +34,12 @@
 			{
 				"category": "Easy Deployment",
 				"command": "easy-deployment.buildAndDeploy",
-				"title": "Build & deploy"
+				"title": "Build & Deploy"
 			},
 			{
 				"category": "Easy Deployment",
 				"command": "easy-deployment.deployOnly",
-				"title": "Deploy only"
+				"title": "Deploy Only"
 			}
 		],
 		"menus": {
@@ -59,6 +59,7 @@
 			"properties": {
 				"easyDeployment.config": {
 					"type": "object",
+					"description": "Build and deploy related configurations for `Easy Deployment`",
 					"properties": {
 						"configurations": {
 							"type": "array",
@@ -78,12 +79,12 @@
 											"projectPath": {
 												"type": "string",
 												"default": ".",
-												"description": "Project root path."
+												"description": "Project root path (relative path)."
 											},
 											"outputDir": {
 												"type": "string",
 												"default": "dist",
-												"description": "Compiled product output path."
+												"description": "Compiled product output path (relative path)."
 											},
 											"buildCmd": {
 												"type": "string",
@@ -98,7 +99,7 @@
 										"properties": {
 											"deploymentPath": {
 												"type": "string",
-												"description": "Remote deployment path."
+												"description": "Remote deployment path (absolute path)."
 											},
 											"backupOriginalFiles": {
 												"type": "boolean",
@@ -108,7 +109,7 @@
 											"backupTo": {
 												"type": "string",
 												"default": "~/backup",
-												"description": "Backup path of the original files."
+												"description": "Backup path (absolute path) of the original files."
 											},
 											"deleteOriginalFiles": {
 												"type": "boolean",
@@ -144,7 +145,7 @@
 											},
 											"privateKey": {
 												"type": "string",
-												"description": "Private key for either key-based or hostbased user authentication (OpenSSH format)."
+												"description": "Private key (absolute path) for either key-based or hostbased user authentication (OpenSSH format)."
 											}
 										}
 									}
