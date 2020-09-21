@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { openSettings, outputMsg, compress, getActivatedConfig, getBuildPath, getOutputPath } from './util';
+import { openSettings, outputMsg, compress, getActivatedConfig, getBuildPath, getOutputPath, removeIfExist } from './util';
 import { build } from './builder';
 import { deploy } from './ssh';
 
@@ -67,17 +67,21 @@ export async function start(deployOnly: boolean) {
         outputMsg('\nFile compression failed, cancel deployment.');
         return;
     }
-    const outputFilename = path.parse(outputFilepath).base;
+    // const outputFilename = path.parse(outputFilepath).base;
     outputMsg('\nPackaging and compression completed.\nThe output file name is ' + outputFilepath);
 
     // 执行部署：建立 SSH 连接，上传文件，执行后续命令
     outputMsg('\nStart deployment...');
     try {
         await deploy(selectedConfig, outputFilepath);
+        // 删除本地打包的 tar.gz
+        removeIfExist(outputFilepath);
         outputMsg('\nSuccessful deployment!');
         outputMsg('\nAll done!');
     } catch(err) {
         console.log(err);
+        // 删除本地打包的 tar.gz
+        removeIfExist(outputFilepath);
         outputMsg('\nERROR: ' + err.message);
         outputMsg('\nDeployment failed!');
         return;

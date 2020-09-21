@@ -56,6 +56,17 @@ export function trimTrailingSlash(pathname: string): string {
     }
 }
 
+/**
+ * 如果文件存在则删除
+ * @param filepath 文件路径
+ */
+export function removeIfExist(filepath: string) {
+    if (fs.existsSync(filepath)) {
+        // 删除文件
+        fs.unlinkSync(filepath);
+    }
+}
+
 export function getFormattedCurrentTime(): string {
     const date = new Date();
     const year = date.getFullYear();
