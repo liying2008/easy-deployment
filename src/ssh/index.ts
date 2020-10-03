@@ -146,13 +146,20 @@ async function backupFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
         return Promise.resolve(false);
     }
     deploymentPath = getValidRemotePath(deploymentPath);
-    backupTo = getValidRemotePath(backupTo);
+    backupTo = trimTrailingSlash(getValidRemotePath(backupTo));
     const basename = path.posix.basename(deploymentPath);
 
     const backupName = `${basename}-${getFormattedCurrentTime()}`;
-    const finalBackupPath = `${trimTrailingSlash(backupTo)}/${backupName}`;
+    const finalBackupPath = `${backupTo}/${backupName}`;
 
-    const command = `cp -prf "${deploymentPath}" "${finalBackupPath}"`;
+    const command = `
+        if [ ! -d "${backupTo}" ]; then
+            mkdir -p "${backupTo}"
+        fi
+        if [ -e "${deploymentPath}" ]; then
+            cp -prf "${deploymentPath}" "${finalBackupPath}"
+        fi
+    `;
     console.log('backupFiles::command', command);
 
     const result = await ssh.execCommand(command);
@@ -175,7 +182,15 @@ async function deleteFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
     const dirname = path.posix.dirname(deploymentPath);
     const basename = path.posix.basename(deploymentPath);
 
-    const command = `test -f "${basename}" && rm -f "${basename}"; test -d "${basename}" && rm -fr "${basename}" && mkdir "${basename}"`;
+    const command = `
+        if [ -e "${basename}" ]; then
+            if [ -f "${basename}" ]; then
+                rm -f "${basename}"
+            elif [ -d "${basename}" ]; then
+                rm -fr "${basename}" && mkdir "${basename}"
+            fi
+        fi
+    `;
     console.log('deleteFiles::command', command);
 
     const result = await ssh.execCommand(command, { cwd: dirname });
@@ -196,9 +211,12 @@ async function extractFile(ssh: NodeSSH, remoteConfig: RemoteConfiguration, zipP
     let deploymentPath = remoteConfig.deploymentPath;
     deploymentPath = getValidRemotePath(deploymentPath);
 
-    const mkdirCmd = `test ! -d "${deploymentPath}" && mkdir -p "${deploymentPath}"`;
-
-    const command = `${mkdirCmd}; tar -xvf "${zipPath}" -C "${deploymentPath}"`;
+    const command = `
+        if [ ! -d "${deploymentPath}" ]; then
+            mkdir -p "${deploymentPath}"
+        fi
+        tar -xvf "${zipPath}" -C "${deploymentPath}"
+    `;
     console.log('extractFile::command', command);
 
     const result = await ssh.execCommand(command);
