@@ -1,6 +1,12 @@
 # Change Log
 
 
+## 0.0.3 (2020-10-03)
+
+- If the deployment directory or backup directory does not exist, it will be created automatically.
+- Fix the bug that the original deployment file does not exist and causes the backup error.
+- Fix the bug that the original deployment file does not exist and causes the deletion error.
+
 ## 0.0.2 (2020-09-22)
 
 - After deployment, delete the local packaging file.
