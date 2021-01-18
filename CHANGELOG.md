@@ -1,6 +1,11 @@
 # Change Log
 
 
+## 0.0.4 (2021-01-18)
+
+- Delete the original file without deleting the directory.
+- Update Dependencies.
+
 ## 0.0.3 (2020-10-03)
 
 - If the deployment directory or backup directory does not exist, it will be created automatically.

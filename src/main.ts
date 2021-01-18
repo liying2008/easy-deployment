@@ -30,7 +30,7 @@ export async function start(deployOnly: boolean) {
         }
     }
     // 打包压缩
-    outputMsg('\nStart packing and compress...');
+    outputMsg('\nStart packing and compressing...');
     const configOutputDir = selectedConfig.local?.outputDir;
     if (!configOutputDir) {
         // 输出目录为空
@@ -53,7 +53,7 @@ export async function start(deployOnly: boolean) {
         outputIsFile = true;
     } else {
         // 其他类型的文件，不支持
-        outputMsg('File of this type is not supported!');
+        outputMsg('File of this type is not supported!\n');
         return;
     }
 
@@ -64,11 +64,11 @@ export async function start(deployOnly: boolean) {
     } catch(err) {
         console.log(err);
         outputMsg('\nERROR: ' + err.message);
-        outputMsg('\nFile compression failed, cancel deployment.');
+        outputMsg('\nFailed to compress file, cancel deployment.\n');
         return;
     }
     // const outputFilename = path.parse(outputFilepath).base;
-    outputMsg('\nPackaging and compression completed.\nThe output file name is ' + outputFilepath);
+    outputMsg('\nPacked and compressed.\nThe output file name is ' + outputFilepath);
 
     // 执行部署：建立 SSH 连接，上传文件，执行后续命令
     outputMsg('\nStart deployment...');
@@ -76,14 +76,14 @@ export async function start(deployOnly: boolean) {
         await deploy(selectedConfig, outputFilepath);
         // 删除本地打包的 tar.gz
         removeIfExist(outputFilepath);
-        outputMsg('\nSuccessful deployment!');
-        outputMsg('\nAll done!');
+        outputMsg('\nDeployment successful!');
+        outputMsg('\nAll done!\n');
     } catch(err) {
         console.log(err);
         // 删除本地打包的 tar.gz
         removeIfExist(outputFilepath);
         outputMsg('\nERROR: ' + err.message);
-        outputMsg('\nDeployment failed!');
+        outputMsg('\nDeployment failed!\n');
         return;
     }
 }

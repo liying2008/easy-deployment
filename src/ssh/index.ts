@@ -187,7 +187,7 @@ async function deleteFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
             if [ -f "${basename}" ]; then
                 rm -f "${basename}"
             elif [ -d "${basename}" ]; then
-                rm -fr "${basename}" && mkdir "${basename}"
+                cd "${basename}" && ls -a -I . -I .. | xargs rm -rf
             fi
         fi
     `;
