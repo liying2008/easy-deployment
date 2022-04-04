@@ -27,7 +27,7 @@ function execute(deployOnly: boolean) {
 	try {
 		start(deployOnly);
 	} catch (err) {
-		outputMsg(`An error occurred:\n${err.message}`);
+		outputMsg(`An error occurred:\n${(err as Error).message}`);
 	}
 }
 

@@ -63,7 +63,7 @@ export async function start(deployOnly: boolean) {
         await compress(realOutputPath, outputFilepath, outputIsFile);
     } catch(err) {
         console.log(err);
-        outputMsg('\nERROR: ' + err.message);
+        outputMsg('\nERROR: ' + (err as Error).message);
         outputMsg('\nFailed to compress file, cancel deployment.\n');
         return;
     }
@@ -82,7 +82,7 @@ export async function start(deployOnly: boolean) {
         console.log(err);
         // 删除本地打包的 tar.gz
         removeIfExist(outputFilepath);
-        outputMsg('\nERROR: ' + err.message);
+        outputMsg('\nERROR: ' + (err as Error).message);
         outputMsg('\nDeployment failed!\n');
         return;
     }

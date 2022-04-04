@@ -64,7 +64,7 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
         outputMsg('\nUpload successfully');
     } catch (error) {
         console.log(error);
-        outputMsg('\nUpload failed:\n' + error.message);
+        outputMsg('\nUpload failed:\n' + (error as Error).message);
         // 断开连接
         ssh.dispose();
         return Promise.reject();
