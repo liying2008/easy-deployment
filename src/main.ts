@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { openSettings, outputMsg, compress, getActivatedConfig, getBuildPath, getOutputPath, removeIfExist } from './util';
+import { openSettings, outputMsg, compress, getActivatedConfig, getBuildPath, getOutputPath, removeIfExist, clearOutput } from './util';
 import { build } from './builder';
 import { deploy } from './ssh';
 
 
 export async function start(deployOnly: boolean) {
+    // 清空 OUTPUT 面板
+    clearOutput();
+
     // 获取使用的配置
     const selectedConfig = await getActivatedConfig();
     if (selectedConfig === undefined) {

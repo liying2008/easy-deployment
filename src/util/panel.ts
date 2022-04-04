@@ -4,6 +4,13 @@ const displayName = require('../../package.json').displayName;
 const outputChannel = vscode.window.createOutputChannel(displayName);
 
 /**
+ * 清空 Output Panel 中的信息
+ */
+export function clearOutput() {
+    outputChannel.clear();
+}
+
+/**
  * 在 Output Panel 中输出信息
  * @param msg 输出的信息
  */
