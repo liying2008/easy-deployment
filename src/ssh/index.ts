@@ -38,6 +38,7 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
             privateKey = path.join(userHome!, privateKey.substring(2, privateKey.length));
         }
         givenConfig['privateKey'] = privateKey;
+        givenConfig['passphrase'] = sshConfig.passphrase;
     } else {
         givenConfig['password'] = sshConfig.password || '';
     }

@@ -45,7 +45,8 @@ This extension contributes the following settings:
           "port": 22,
           "username": "pi",
           "password": "",
-          "privateKey": "~/.ssh/id_rsa"
+          "privateKey": "~/.ssh/id_rsa",
+          "passphrase": ""
         }
       }
     ]
@@ -82,12 +83,14 @@ This extension contributes the following settings:
   | `username`  |  | Username for authentication |
   | `password`  |  | Password for password-based user authentication |
   | `privateKey`  |  | Private key (absolute path) for either key-based or hostbased user authentication (OpenSSH format) |
+  | `passphrase`  |  | For an encrypted private key, this is the passphrase used to decrypt it. |
 
 **Note:**
 
 * Please set it according to your actual needs.
 * You can choose between `password` and `privateKey` in the ssh configuration.
 * If you use `privateKey`, remember to put the local ssh public key into the server's `authorized_keys` file.
+* If you use `privateKey` and the `privateKey` is encrypted, fill in the `passphrase` field.
 * The remote server needs to be a **Linux** machine.
 * There can be multiple configurations in the outer configurations, and the `name` attribute cannot be repeated.
 

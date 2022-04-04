@@ -15,6 +15,7 @@ interface SSHConfiguration {
     username: string
     password?: string
     privateKey?: string
+    passphrase?: string
 }
 
 interface LocalConfiguration {

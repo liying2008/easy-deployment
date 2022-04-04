@@ -20,6 +20,7 @@ const config: Config = {
             username: "pi",
             password: "123456",
             privateKey: undefined,
+            passphrase: undefined,
         }
     }]
 };

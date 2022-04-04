@@ -147,6 +147,10 @@
 											"privateKey": {
 												"type": "string",
 												"description": "Private key (absolute path) for either key-based or hostbased user authentication (OpenSSH format)."
+											},
+											"passphrase": {
+												"type": "string",
+												"description": "For an encrypted private key, this is the passphrase used to decrypt it."
 											}
 										}
 									}
