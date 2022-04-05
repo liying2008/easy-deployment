@@ -1,6 +1,12 @@
 # Change Log
 
 
+## 0.0.5 (2022-04-05)
+
+- Support for specifying `passphrase` for encrypted privateKey. (Thanks @moalamri)
+- Clear the OUTPUT panel before executing a new command.
+- Update Dependencies.
+
 ## 0.0.4 (2021-01-18)
 
 - Delete the original file without deleting the directory.
