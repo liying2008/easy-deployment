@@ -9,13 +9,15 @@ import { Uri } from 'vscode'
 export function getProjectPath(): string | undefined {
   const workspaceName = vscode.workspace.name
   const workspaceFolders = vscode.workspace.workspaceFolders
-  if (!workspaceFolders)
+  if (!workspaceFolders) {
     return undefined
+  }
 
   let fsPath
   workspaceFolders!.forEach((folder: vscode.WorkspaceFolder) => {
-    if (folder.name === workspaceName)
+    if (folder.name === workspaceName) {
       fsPath = folder.uri.fsPath
+    }
   })
   return fsPath
 }
@@ -32,8 +34,9 @@ export async function openSettings() {
   const settingsPath = path.join(projectPath, './.vscode/settings.json')
   const uri = Uri.file(settingsPath)
   const exist = fs.existsSync(settingsPath)
-  if (!exist)
+  if (!exist) {
     fs.writeFileSync(settingsPath, '{}')
+  }
 
   const _success = await vscode.commands.executeCommand('vscode.open', uri)
 }
@@ -43,14 +46,15 @@ export async function openSettings() {
  * @param pathname path
  */
 export function trimTrailingSlash(pathname: string): string {
-  if (pathname === '/')
+  if (pathname === '/') {
     return pathname
+  }
 
-  if (pathname.endsWith('\\') || pathname.endsWith('/'))
+  if (pathname.endsWith('\\') || pathname.endsWith('/')) {
     return pathname.substring(0, pathname.length - 1)
-
-  else
+  } else {
     return pathname
+  }
 }
 
 /**

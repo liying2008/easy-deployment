@@ -10,8 +10,9 @@ export async function start(deployOnly: boolean) {
 
   // 获取使用的配置
   const selectedConfig = await getActivatedConfig()
-  if (selectedConfig === undefined)
+  if (selectedConfig === undefined) {
     return
+  }
 
   // 应用构建路径
   const buildPath = getBuildPath(selectedConfig.local?.projectPath)
@@ -71,18 +72,18 @@ export async function start(deployOnly: boolean) {
   outputMsg(`\nPacked and compressed.\nThe output file name is ${outputFilepath}`)
 
   // 执行部署：建立 SSH 连接，上传文件，执行后续命令
-  outputMsg('\nStart deployment...')
+  outputMsg('\nStarting deployment...')
   try {
     await deploy(selectedConfig, outputFilepath)
     // 删除本地打包的 tar.gz
     removeIfExist(outputFilepath)
-    outputMsg('\nDeployment successful!')
+    outputMsg('\nDeployed successfully!')
     outputMsg('\nAll done!\n')
   } catch (err) {
     console.log(err)
     // 删除本地打包的 tar.gz
     removeIfExist(outputFilepath)
     outputMsg(`\nERROR: ${(err as Error).message}`)
-    outputMsg('\nDeployment failed!\n')
+    outputMsg('\nDeploy failed!\n')
   }
 }

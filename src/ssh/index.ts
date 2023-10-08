@@ -140,7 +140,7 @@ async function backupFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
   let backupTo = remoteConfig.backupTo
   if (!backupTo) {
     // 缺少 backupTo 配置
-    vscode.window.showErrorMessage('Property backupTo is not configured.')
+    vscode.window.showErrorMessage('Property remote.backupTo is not configured.')
     openSettings()
     return Promise.resolve(false)
   }
@@ -254,7 +254,7 @@ async function executePostCmd(ssh: NodeSSH, remoteConfig: RemoteConfiguration): 
   deploymentPath = getValidRemotePath(deploymentPath)
   deploymentPath = path.posix.normalize(deploymentPath)
 
-  const postCmd = remoteConfig.postCmd
+  const postCmd = remoteConfig.postCmd!
 
   console.log('executePostCmd::command', postCmd)
 
@@ -275,8 +275,9 @@ async function executePostCmd(ssh: NodeSSH, remoteConfig: RemoteConfiguration): 
 }
 
 function getValidRemotePath(remotePath: string) {
-  if (remotePath.startsWith('~/'))
+  if (remotePath.startsWith('~/')) {
     remotePath = `./${remotePath.substring(2)}`
+  }
 
   return remotePath
 }

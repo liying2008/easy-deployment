@@ -90,7 +90,6 @@
                       },
                       "buildCmd": {
                         "type": "string",
-                        "default": "yarn build",
                         "description": "Build command for local project."
                       }
                     }
@@ -122,11 +121,12 @@
                         "type": "string",
                         "description": "Command executed after deployment."
                       }
-                    }
+                    },
+                    "required": ["deploymentPath"]
                   },
                   "ssh": {
                     "type": "object",
-                    "description": "Configuration of ssh connection.",
+                    "description": "SSH configuration for connecting to remote server.",
                     "properties": {
                       "host": {
                         "type": "string",
@@ -153,9 +153,11 @@
                         "type": "string",
                         "description": "For an encrypted private key, this is the passphrase used to decrypt it."
                       }
-                    }
+                    },
+                    "required": ["host", "username"]
                   }
-                }
+                },
+                "required": ["name", "remote", "ssh"]
               }
             }
           }

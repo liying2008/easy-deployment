@@ -1,8 +1,8 @@
 # Easy Deployment 
 
-[![Version](https://vsmarketplacebadge.apphb.com/version-short/liying.easy-deployment.svg)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
-[![Installs](https://vsmarketplacebadge.apphb.com/installs-short/liying.easy-deployment.svg)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
-[![Rating](https://vsmarketplacebadge.apphb.com/rating-short/liying.easy-deployment.svg)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
+[![Visual Studio Marketplace Version (including pre-releases)](https://img.shields.io/visual-studio-marketplace/v/liying.easy-deployment)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/liying.easy-deployment)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
+[![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/liying.easy-deployment)](https://marketplace.visualstudio.com/items?itemName=liying.easy-deployment)
 
 **Deploy your frontend project quickly and easily.**
 
@@ -10,7 +10,7 @@
 ## Features
 
 - Select "Build & Deploy" to build your project and deploy it to a remote server. 
-- Selecting "Deploy Only" will only execute the deployment process.
+- Select "Deploy Only" to deploy your project build dist to the remote server.
 
 ![Extension menus](https://raw.githubusercontent.com/liying2008/easy-deployment/master/pics/extension_commands.png)
 
@@ -31,7 +31,7 @@ This extension contributes the following settings:
         "local": {
           "projectPath": ".",
           "buildCmd": "yarn build",
-          "outputDir": "dist/spa",
+          "outputDir": "dist"
         },
         "remote": {
           "deploymentPath": "~/nginx/html",
@@ -58,32 +58,32 @@ This extension contributes the following settings:
 
 * `local` configuration (Configuration of local project):
 
-  |  Key   | Defaults | Description |
-  |  ----  | ----  | ----  |
-  | `projectPath`  | . | Project root path (relative path) |
-  | `buildCmd`  | yarn build | Build command for local project |
-  | `outputDir`  | dist | Compiled product output path (relative path) |
+  |  Key           | Defaults | Required | Description  |
+  |  ----          | ----     | ----     | ----         |
+  | `projectPath`  | .        | √        | Project root path (relative path) |
+  | `buildCmd`     |          |          | Build command for local project |
+  | `outputDir`    | dist     | √        | Compiled product output path (relative path) |
 
 * `remote` configuration (Configuration of remote server):
 
-  |  Key   | Defaults | Description |
-  |  ----  | ----  | ----  |
-  | `deploymentPath`  |  | Remote deployment path (absolute path) |
-  | `backupOriginalFiles`  | false | Do you need to back up the original files? |
-  | `backupTo`  | ~/backup | Backup path (absolute path) of the original files |
-  | `deleteOriginalFiles`  | false | Do you need to delete the original files? |
-  | `postCmd`  |  | Command executed after deployment |
+  |  Key                  | Defaults | Required | Description  |
+  |  ----                 | ----     | ----     | ----         |
+  | `deploymentPath`      |          | √        | Remote deployment path (absolute path) |
+  | `backupOriginalFiles` | false    |          | Do you need to back up the original files? |
+  | `backupTo`            | ~/backup |          | Backup path (absolute path) of the original files |
+  | `deleteOriginalFiles` | false    |          | Do you need to delete the original files? |
+  | `postCmd`             |          |          | Command executed after deployment |
 
 * `ssh` configuration (Configuration of ssh connection):
 
-  |  Key   | Defaults | Description |
-  |  ----  | ----  | ----  |
-  | `host`  |  | Hostname or IP address of the server |
-  | `port`  | 22 | Port number of the server |
-  | `username`  |  | Username for authentication |
-  | `password`  |  | Password for password-based user authentication |
-  | `privateKey`  |  | Private key (absolute path) for either key-based or hostbased user authentication (OpenSSH format) |
-  | `passphrase`  |  | For an encrypted private key, this is the passphrase used to decrypt it. |
+  |  Key         | Defaults | Required | Description |
+  |  ----        | ----     | ----     | ----        |
+  | `host`       |          | √        | Hostname or IP address of the server |
+  | `port`       | 22       | √        | Port number of the server |
+  | `username`   |          | √        | Username for authentication |
+  | `password`   |          |          | Password for password-based user authentication |
+  | `privateKey` |          |          | Private key (absolute path) for either key-based or hostbased user authentication (OpenSSH format)  |
+  | `passphrase` |          |          | For an encrypted private key, this is the passphrase used to decrypt it. |
 
 **Note:**
 

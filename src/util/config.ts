@@ -70,8 +70,9 @@ export function getBuildPath(configProjectPath: string | undefined): string | un
     vscode.window.showErrorMessage('No open workspace!')
     return undefined
   }
-  if (configProjectPath === undefined)
+  if (configProjectPath === undefined) {
     configProjectPath = '.'
+  }
 
   const absolutePath = trimTrailingSlash(path.normalize(path.join(projectPath, configProjectPath)))
   console.log('getBuildPath::absolutePath,', absolutePath)
