@@ -1,193 +1,202 @@
 {
-	"name": "easy-deployment",
-	"displayName": "Easy Deployment",
-	"description": "Deploy your frontend project quickly and easily.",
-	"keywords": [
-		"frontend",
-		"deployment",
-		"deploy",
-		"publish",
-		"ssh"
+  "publisher": "LiYing",
+  "name": "easy-deployment",
+  "displayName": "Easy Deployment",
+  "type": "commonjs",
+  "version": "1.0.0",
+  "description": "Deploy your frontend project quickly and easily.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liying2008/easy-deployment"
+  },
+  "bugs": {
+    "url": "https://github.com/liying2008/easy-deployment/issues"
+  },
+  "keywords": [
+    "frontend",
+    "deployment",
+    "deploy",
+    "publish",
+    "ssh"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.49.0"
+  },
+  "activationEvents": [
+    "onCommand:easy-deployment.buildAndDeploy",
+    "onCommand:easy-deployment.deployOnly"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "category": "Easy Deployment",
+        "command": "easy-deployment.buildAndDeploy",
+        "title": "Build & Deploy"
+      },
+      {
+        "category": "Easy Deployment",
+        "command": "easy-deployment.deployOnly",
+        "title": "Deploy Only"
+      }
     ],
-	"version": "0.0.5",
-	"publisher": "LiYing",
-	"icon": "images/icon.png",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/liying2008/easy-deployment"
-	},
-	"bugs": {
-		"url": "https://github.com/liying2008/easy-deployment/issues"
-	},
-	"engines": {
-		"vscode": "^1.49.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:easy-deployment.buildAndDeploy",
-		"onCommand:easy-deployment.deployOnly"
-	],
-	"main": "./dist/extension",
-	"contributes": {
-		"commands": [
-			{
-				"category": "Easy Deployment",
-				"command": "easy-deployment.buildAndDeploy",
-				"title": "Build & Deploy"
-			},
-			{
-				"category": "Easy Deployment",
-				"command": "easy-deployment.deployOnly",
-				"title": "Deploy Only"
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"command": "easy-deployment.buildAndDeploy",
-					"group": "navigation"
-				},
-				{
-					"command": "easy-deployment.deployOnly",
-					"group": "navigation"
-				}
-			]
-		},
-		"configuration": {
-			"title": "Easy Deployment",
-			"properties": {
-				"easyDeployment.config": {
-					"type": "object",
-					"description": "Build and deploy related configurations for `Easy Deployment`",
-					"properties": {
-						"configurations": {
-							"type": "array",
-							"default": [],
-							"description": "Configurations for build and deployment.",
-							"items": {
-								"type": "object",
-								"properties": {
-									"name": {
-										"type": "string",
-										"description": "Profile name."
-									},
-									"local": {
-										"type": "object",
-										"description": "Configuration of local project.",
-										"properties": {
-											"projectPath": {
-												"type": "string",
-												"default": ".",
-												"description": "Project root path (relative path)."
-											},
-											"outputDir": {
-												"type": "string",
-												"default": "dist",
-												"description": "Compiled product output path (relative path)."
-											},
-											"buildCmd": {
-												"type": "string",
-												"default": "yarn build",
-												"description": "Build command for local project."
-											}
-										}
-									},
-									"remote": {
-										"type": "object",
-										"description": "Configuration of remote server.",
-										"properties": {
-											"deploymentPath": {
-												"type": "string",
-												"description": "Remote deployment path (absolute path)."
-											},
-											"backupOriginalFiles": {
-												"type": "boolean",
-												"default": false,
-												"description": "Do you need to back up the original files?"
-											},
-											"backupTo": {
-												"type": "string",
-												"default": "~/backup",
-												"description": "Backup path (absolute path) of the original files."
-											},
-											"deleteOriginalFiles": {
-												"type": "boolean",
-												"default": false,
-												"description": "Do you need to delete the original files?"
-											},
-											"postCmd": {
-												"type": "string",
-												"description": "Command executed after deployment."
-											}
-										}
-									},
-									"ssh": {
-										"type": "object",
-										"description": "Configuration of ssh connection.",
-										"properties": {
-											"host": {
-												"type": "string",
-												"description": "Hostname or IP address of the server."
-											},
-											"port": {
-												"type": "number",
-												"default": 22,
-												"description": "Port number of the server."
-											},
-											"username": {
-												"type": "string",
-												"description": "Username for authentication."
-											},
-											"password": {
-												"type": "string",
-												"description": "Password for password-based user authentication."
-											},
-											"privateKey": {
-												"type": "string",
-												"description": "Private key (absolute path) for either key-based or hostbased user authentication (OpenSSH format)."
-											},
-											"passphrase": {
-												"type": "string",
-												"description": "For an encrypted private key, this is the passphrase used to decrypt it."
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "webpack --mode production",
-		"webpack": "webpack --mode development",
-		"webpack-dev": "webpack --mode development --watch",
-		"test-compile": "tsc -p ./",
-		"lint": "eslint src --ext ts"
-	},
-	"devDependencies": {
-		"@types/archiver": "^5.3.1",
-		"@types/glob": "^7.2.0",
-		"@types/mocha": "^9.1.0",
-		"@types/node": "^17.0.23",
-		"@types/vscode": "^1.49.0",
-		"@typescript-eslint/eslint-plugin": "^5.17.0",
-		"@typescript-eslint/parser": "^5.17.0",
-		"eslint": "^8.12.0",
-		"glob": "^7.2.0",
-		"mocha": "^9.2.2",
-		"ts-loader": "^8.3.0",
-		"typescript": "^4.6.3",
-		"vscode-test": "^1.6.1",
-		"webpack": "^4.46.0",
-		"webpack-cli": "^3.3.12"
-	},
-	"dependencies": {
-		"archiver": "^5.3.0",
-		"node-ssh": "^12.0.4"
-	}
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "easy-deployment.buildAndDeploy",
+          "group": "navigation"
+        },
+        {
+          "command": "easy-deployment.deployOnly",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Easy Deployment",
+      "properties": {
+        "easyDeployment.config": {
+          "type": "object",
+          "description": "Build and deploy related configurations for `Easy Deployment`",
+          "properties": {
+            "configurations": {
+              "type": "array",
+              "default": [],
+              "description": "Configurations for build and deployment.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Profile name."
+                  },
+                  "local": {
+                    "type": "object",
+                    "description": "Configuration of local project.",
+                    "properties": {
+                      "projectPath": {
+                        "type": "string",
+                        "default": ".",
+                        "description": "Project root path (relative path)."
+                      },
+                      "outputDir": {
+                        "type": "string",
+                        "default": "dist",
+                        "description": "Compiled product output path (relative path)."
+                      },
+                      "buildCmd": {
+                        "type": "string",
+                        "default": "yarn build",
+                        "description": "Build command for local project."
+                      }
+                    }
+                  },
+                  "remote": {
+                    "type": "object",
+                    "description": "Configuration of remote server.",
+                    "properties": {
+                      "deploymentPath": {
+                        "type": "string",
+                        "description": "Remote deployment path (absolute path)."
+                      },
+                      "backupOriginalFiles": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Do you need to back up the original files?"
+                      },
+                      "backupTo": {
+                        "type": "string",
+                        "default": "~/backup",
+                        "description": "Backup path (absolute path) of the original files."
+                      },
+                      "deleteOriginalFiles": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Do you need to delete the original files?"
+                      },
+                      "postCmd": {
+                        "type": "string",
+                        "description": "Command executed after deployment."
+                      }
+                    }
+                  },
+                  "ssh": {
+                    "type": "object",
+                    "description": "Configuration of ssh connection.",
+                    "properties": {
+                      "host": {
+                        "type": "string",
+                        "description": "Hostname or IP address of the server."
+                      },
+                      "port": {
+                        "type": "number",
+                        "default": 22,
+                        "description": "Port number of the server."
+                      },
+                      "username": {
+                        "type": "string",
+                        "description": "Username for authentication."
+                      },
+                      "password": {
+                        "type": "string",
+                        "description": "Password for password-based user authentication."
+                      },
+                      "privateKey": {
+                        "type": "string",
+                        "description": "Private key (absolute path) for either key-based or hostbased user authentication (OpenSSH format)."
+                      },
+                      "passphrase": {
+                        "type": "string",
+                        "description": "For an encrypted private key, this is the passphrase used to decrypt it."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src",
+    "test": "node ./out/test/runTest.js"
+  },
+  "dependencies": {
+    "archiver": "^5.3.2",
+    "node-ssh": "^13.1.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^1.0.0-beta.21",
+    "@types/archiver": "^5.3.3",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.2",
+    "@types/node": "18.x",
+    "@types/ssh2": "^1.11.14",
+    "@types/ssh2-streams": "^0.1.10",
+    "@types/vscode": "^1.49.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "@vscode/test-electron": "^2.3.5",
+    "eslint": "^8.51.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "node-loader": "^2.0.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
 }

@@ -1,8 +1,7 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as archiver from 'archiver';
-import { outputMsg } from './panel';
-
+import * as fs from 'node:fs'
+import * as path from 'node:path'
+import * as archiver from 'archiver'
+import { outputMsg } from './panel'
 
 /**
  * 打包并压缩文件
@@ -11,33 +10,33 @@ import { outputMsg } from './panel';
  * @param isFile 待压缩的是否是文件
  */
 export function compress(sourcePath: string, outputPath: string, isFile: boolean) {
-    let output = fs.createWriteStream(outputPath);
-    let archive = archiver('tar', {
-        gzip: true,
-        gzipOptions: {
-            level: 5
-        }
-    });
+  const output = fs.createWriteStream(outputPath)
+  const archive = archiver('tar', {
+    gzip: true,
+    gzipOptions: {
+      level: 5,
+    },
+  })
 
-    // 显示当前正在压缩的文件
-    archive.on('entry', (entry: archiver.EntryData) => {
-        const entryName = entry.name;
-        // console.log(`Compressing file: ${entryName}`);
-        outputMsg(`Compressing file: ${entryName}`);
-    });
+  // 显示当前正在压缩的文件
+  archive.on('entry', (entry: archiver.EntryData) => {
+    const entryName = entry.name
+    // console.log(`Compressing file: ${entryName}`);
+    outputMsg(`Compressing file: ${entryName}`)
+  })
 
-    // good practice to catch this error explicitly
-    archive.on('error', (err) => {
-        console.log('compress error: ', err);
-        throw err;
-    });
+  // good practice to catch this error explicitly
+  archive.on('error', (err) => {
+    console.log('compress error: ', err)
+    throw err
+  })
 
-    archive.pipe(output);
-    if (isFile) {
-        const sourceName = path.parse(sourcePath).base;
-        archive.file(sourcePath, { name: sourceName });
-    } else {
-        archive.directory(sourcePath, false);
-    }
-    return archive.finalize();
+  archive.pipe(output)
+  if (isFile) {
+    const sourceName = path.parse(sourcePath).base
+    archive.file(sourcePath, { name: sourceName })
+  } else {
+    archive.directory(sourcePath, false)
+  }
+  return archive.finalize()
 }

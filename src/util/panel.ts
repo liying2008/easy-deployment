@@ -1,13 +1,13 @@
-import * as vscode from 'vscode';
-const displayName = require('../../package.json').displayName;
+import * as vscode from 'vscode'
+import { displayName } from '../../package.json'
 
-const outputChannel = vscode.window.createOutputChannel(displayName);
+const outputChannel = vscode.window.createOutputChannel(displayName)
 
 /**
  * 清空 Output Panel 中的信息
  */
 export function clearOutput() {
-    outputChannel.clear();
+  outputChannel.clear()
 }
 
 /**
@@ -15,6 +15,6 @@ export function clearOutput() {
  * @param msg 输出的信息
  */
 export function outputMsg(msg: string) {
-    outputChannel.appendLine(msg);
-    outputChannel.show();
+  outputChannel.appendLine(msg)
+  outputChannel.show()
 }

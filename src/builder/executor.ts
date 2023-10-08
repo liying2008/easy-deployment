@@ -1,10 +1,11 @@
-import * as util from 'util';
-// import { exec } from 'child_process';
-const exec = util.promisify(require('child_process').exec);
+import * as util from 'node:util'
+import { exec } from 'node:child_process'
+
+const execPromise = util.promisify(exec)
 
 export async function execute(cmd: string, path: string) {
-    return exec(cmd, {
-        cwd: path,
-        // encoding: 'utf8'
-    });
+  return execPromise(cmd, {
+    cwd: path,
+    // encoding: 'utf8'
+  })
 }
