@@ -74,7 +74,7 @@ This extension contributes the following settings:
   | `deleteOriginalFiles` | false    |          | Do you need to delete the original files? |
   | `postCmd`             |          |          | Command executed after deployment |
 
-* `ssh` configuration (Configuration of ssh connection):
+* `ssh` configuration (SSH configuration for connecting to remote server):
 
   |  Key         | Defaults | Required | Description |
   |  ----        | ----     | ----     | ----        |

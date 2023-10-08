@@ -35,7 +35,7 @@ export async function start(deployOnly: boolean) {
   const configOutputDir = selectedConfig.local?.outputDir
   if (!configOutputDir) {
     // 输出目录为空
-    vscode.window.showErrorMessage('The output directory cannot be set to empty.')
+    vscode.window.showErrorMessage('`local.outputDir` is not configured or empty.')
     openSettings()
     return
   }

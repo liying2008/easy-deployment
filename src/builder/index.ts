@@ -8,7 +8,7 @@ export async function build(selectedConfig: Configuration, buildPath: string): P
   const buildCmd = selectedConfig.local.buildCmd
   if (!buildCmd) {
     // 构建命令为空
-    vscode.window.showErrorMessage('The build command cannot be set to empty.')
+    vscode.window.showErrorMessage('`local.buildCmd` property is not configured or empty.')
     openSettings()
     return Promise.resolve(false)
   }

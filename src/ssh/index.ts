@@ -11,15 +11,15 @@ export async function deploy(selectedConfig: Configuration, outputFilepath: stri
   const remoteConfig = selectedConfig.remote
   if (!sshConfig || !sshConfig.host || !sshConfig.username) {
     // 未配置host或username
-    vscode.window.showErrorMessage('Host or username is not configured.')
+    vscode.window.showErrorMessage('`ssh.host` or `ssh.username` is not configured or empty.')
     openSettings()
-    return Promise.reject(new Error('Host or username is not configured.'))
+    return Promise.reject(new Error('`ssh.host` or `ssh.username` is not configured or empty.'))
   }
   if (!remoteConfig || !remoteConfig.deploymentPath) {
     // 未配置远程部署路径
-    vscode.window.showErrorMessage('The remote deployment path is not configured.')
+    vscode.window.showErrorMessage('`remote.deploymentPath` is not configured or empty.')
     openSettings()
-    return Promise.reject(new Error('The remote deployment path is not configured.'))
+    return Promise.reject(new Error('`remote.deploymentPath` is not configured or empty.'))
   }
   // 建立 ssh 连接
   outputMsg('Establish ssh connection.')
@@ -140,7 +140,7 @@ async function backupFiles(ssh: NodeSSH, remoteConfig: RemoteConfiguration): Pro
   let backupTo = remoteConfig.backupTo
   if (!backupTo) {
     // 缺少 backupTo 配置
-    vscode.window.showErrorMessage('Property remote.backupTo is not configured.')
+    vscode.window.showErrorMessage('`remote.backupTo` property is not configured or empty.')
     openSettings()
     return Promise.resolve(false)
   }
