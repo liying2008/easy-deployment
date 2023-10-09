@@ -1,6 +1,13 @@
 # Change Log
 
 
+## 1.0.0 (2023-10-09)
+
+- Support for excluding specific files when deploying files, using the `local.exclude` property. (Close #8)
+- Remove the `local.buildCmd` default value.
+- Optimize some display messages.
+- Update Dependencies.
+
 ## 0.0.5 (2022-04-05)
 
 - Support for specifying `passphrase` for encrypted privateKey. (Thanks @moalamri)
