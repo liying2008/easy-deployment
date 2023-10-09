@@ -18,5 +18,8 @@ node_modules
 out/
 src/
 tsconfig.json
+.editorconfig
+eslint.config.js
 webpack.config.js
 pics/
+yarn.lock
