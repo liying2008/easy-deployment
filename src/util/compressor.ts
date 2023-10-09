@@ -8,8 +8,9 @@ import { outputMsg } from './panel'
  * @param sourcePath 待压缩的文件路径
  * @param outputPath 压缩后的输出文件（含路径）
  * @param isFile 待压缩的是否是文件
+ * @param exclude 需要排除的文件列表
  */
-export function compress(sourcePath: string, outputPath: string, isFile: boolean) {
+export function compress(sourcePath: string, outputPath: string, isFile: boolean, exclude: string[]) {
   const output = fs.createWriteStream(outputPath)
   const archive = archiver('tar', {
     gzip: true,
@@ -36,7 +37,8 @@ export function compress(sourcePath: string, outputPath: string, isFile: boolean
     const sourceName = path.parse(sourcePath).base
     archive.file(sourcePath, { name: sourceName })
   } else {
-    archive.directory(sourcePath, false)
+    // dot set true to include hidden files
+    archive.glob('**/*', { cwd: sourcePath, ignore: exclude, dot: true })
   }
   return archive.finalize()
 }

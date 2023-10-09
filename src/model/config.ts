@@ -61,20 +61,26 @@ export interface LocalConfiguration {
    */
   projectPath?: string
   /**
-   * Compiled product output path (relative path)
+   * Build command for local project
+   */
+  buildCmd?: string
+  /**
+   * Compiled product output path. (path relative to the projectPath)
    *
    * @default "dist"
    */
   outputDir: string
   /**
-   * Build command for local project
+   * Files excluded on deployment. (path pattern relative to the outputDir)
+   *
+   * @default []
    */
-  buildCmd?: string
+  exclude?: string[]
 }
 
 export interface RemoteConfiguration {
   /**
-   * Remote deployment path (absolute path)
+   * Remote deployment path. (must be an absolute path)
    */
   deploymentPath: string
   /**
@@ -84,7 +90,7 @@ export interface RemoteConfiguration {
    */
   backupOriginalFiles?: boolean
   /**
-   * Backup path (absolute path) of the original files
+   * Backup path of the original files. (must be an absolute path)
    *
    * @default "~/backup"
    */

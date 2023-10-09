@@ -54,14 +54,14 @@ export async function start(deployOnly: boolean) {
     outputIsFile = true
   } else {
     // 其他类型的文件，不支持
-    outputMsg('File of this type is not supported!\n')
+    outputMsg('Unsupported file type!\n')
     return
   }
 
   const currentTime = new Date().getTime()
   const outputFilepath = `${realOutputPath}-${currentTime}.tar.gz`
   try {
-    await compress(realOutputPath, outputFilepath, outputIsFile)
+    await compress(realOutputPath, outputFilepath, outputIsFile, selectedConfig.local.exclude || [])
   } catch (err) {
     console.log(err)
     outputMsg(`\nERROR: ${(err as Error).message}`)

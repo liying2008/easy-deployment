@@ -83,14 +83,19 @@
                         "default": ".",
                         "description": "Project root path (relative path)."
                       },
-                      "outputDir": {
-                        "type": "string",
-                        "default": "dist",
-                        "description": "Compiled product output path (relative path)."
-                      },
                       "buildCmd": {
                         "type": "string",
                         "description": "Build command for local project."
+                      },
+                      "outputDir": {
+                        "type": "string",
+                        "default": "dist",
+                        "description": "Compiled product output path. (path relative to the projectPath)"
+                      },
+                      "exclude": {
+                        "type": "array",
+                        "default": [],
+                        "description": "Files excluded on deployment. (path pattern relative to the outputDir)"
                       }
                     }
                   },
@@ -100,7 +105,7 @@
                     "properties": {
                       "deploymentPath": {
                         "type": "string",
-                        "description": "Remote deployment path (absolute path)."
+                        "description": "Remote deployment path. (must be an absolute path)"
                       },
                       "backupOriginalFiles": {
                         "type": "boolean",
@@ -110,7 +115,7 @@
                       "backupTo": {
                         "type": "string",
                         "default": "~/backup",
-                        "description": "Backup path (absolute path) of the original files."
+                        "description": "Backup path of the original files. (must be an absolute path)"
                       },
                       "deleteOriginalFiles": {
                         "type": "boolean",

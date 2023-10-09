@@ -90,7 +90,7 @@ export function getOutputPath(configOutputDir: string | undefined): string | und
     return undefined
   }
   if (configOutputDir === undefined) {
-    vscode.window.showErrorMessage('The product output directory cannot be set to empty.')
+    vscode.window.showErrorMessage('`local.outputDir` is not configured or empty.')
     return undefined
   }
   const absolutePath = trimTrailingSlash(path.normalize(path.join(projectPath, configOutputDir)))

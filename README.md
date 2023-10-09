@@ -20,7 +20,11 @@ Commands in command palette:
 
 ## Extension Settings
 
-This extension contributes the following settings:
+Two `settings.json` samples:
+
+- The **FIRST** way to use
+
+> Select "Build & Deploy" to build project locally and upload dist to the remote server.
 
 ```json
 {
@@ -37,16 +41,45 @@ This extension contributes the following settings:
           "deploymentPath": "~/nginx/html",
           "backupOriginalFiles": true,
           "backupTo": "~/backup",
-          "deleteOriginalFiles": true,
-          "postCmd": "ls -alF"
+          "deleteOriginalFiles": true
         },
         "ssh": {
           "host": "192.168.1.200",
           "port": 22,
           "username": "pi",
-          "password": "",
-          "privateKey": "~/.ssh/id_rsa",
-          "passphrase": ""
+          "privateKey": "~/.ssh/id_rsa"
+        }
+      }
+    ]
+  }
+}
+```
+
+- The **SECOND** way to use
+
+> Select "Deploy Only" to upload the project source code to the remote server and execute a script to build and deploy on the remote server.
+
+```json
+{
+  "easyDeployment.config": {
+    "configurations": [
+      {
+        "name": "dev",
+        "local": {
+          "projectPath": ".",
+          "outputDir": ".",
+          "exclude": ["**/node_modules/**", "dist/**"]
+        },
+        "remote": {
+          "deploymentPath": "~/web/projects/demo",
+          "deleteOriginalFiles": true,
+          "postCmd": "bash ./build_and_deploy.sh"
+        },
+        "ssh": {
+          "host": "192.168.1.200",
+          "port": 22,
+          "username": "pi",
+          "privateKey": "~/.ssh/id_rsa"
         }
       }
     ]
@@ -62,15 +95,16 @@ This extension contributes the following settings:
   |  ----          | ----     | ----     | ----         |
   | `projectPath`  | .        | √        | Project root path (relative path) |
   | `buildCmd`     |          |          | Build command for local project |
-  | `outputDir`    | dist     | √        | Compiled product output path (relative path) |
+  | `outputDir`    | dist     | √        | Compiled product output path. (path relative to the projectPath) |
+  | `exclude`      | []       |          | Files excluded on deployment. (path pattern relative to the outputDir) |
 
 * `remote` configuration (Configuration of remote server):
 
   |  Key                  | Defaults | Required | Description  |
   |  ----                 | ----     | ----     | ----         |
-  | `deploymentPath`      |          | √        | Remote deployment path (absolute path) |
+  | `deploymentPath`      |          | √        | Remote deployment path. (must be an absolute path) |
   | `backupOriginalFiles` | false    |          | Do you need to back up the original files? |
-  | `backupTo`            | ~/backup |          | Backup path (absolute path) of the original files |
+  | `backupTo`            | ~/backup |          | Backup path of the original files. (must be an absolute path) |
   | `deleteOriginalFiles` | false    |          | Do you need to delete the original files? |
   | `postCmd`             |          |          | Command executed after deployment |
 
